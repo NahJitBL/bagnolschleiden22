@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spiky Ball Animation</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="spikyBallCanvas" width="400" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById('spikyBallCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let angle = 0;
+    let spikeColor = 'red';
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw blue ball
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, 50, 0, Math.PI * 2);
+      ctx.fillStyle = 'blue';
+      ctx.fill();
+      ctx.closePath();
+      
+      // Draw spikes
+      drawSpikes(canvas.width / 2, canvas.height / 2, 50, 20, 8, angle, spikeColor);
+      
+      // Increase the angle for next frame
+      angle += 0.05;
+      
+      // Change spike color every 50 frames
+      if (angle % (Math.PI * 2) === 0) {
+        spikeColor = getRandomColor();
+      }
+      
+      requestAnimationFrame(draw);
+    }
+
+    function drawSpikes(x, y, radius, length, numSpikes, rotation, color) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      
+      ctx.fillStyle = color;
+      for (let i = 0; i < numSpikes; i++) {
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(i * Math.PI * 2 / numSpikes) * radius, Math.sin(i * Math.PI * 2 / numSpikes) * radius);
+        ctx.lineTo(Math.cos(i * Math.PI * 2 / numSpikes) * (radius + length), Math.sin(i * Math.PI * 2 / numSpikes) * (radius + length));
+        ctx.closePath();
+        ctx.fill();
+      }
+      
+      ctx.restore();
+    }
+
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    draw();
+  </script>
+</body>
+</html>
